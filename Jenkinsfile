@@ -1,12 +1,8 @@
-pipeline {
-  agent any
-  tools {
-    maven 'M3'
-  }
-  stages {
+node{
      stage('SCM Checkout'){
         git 'https://github.com/javahometech/my-app' }
     stage('Build') {
-        sh 'mvn -B -DskipTests clean package'
+     def mvnHome = tool name: 'M2_HOME', type: 'maven'
+      sh "${mvnHome}/bin/mvn clean package"
       }
   }
