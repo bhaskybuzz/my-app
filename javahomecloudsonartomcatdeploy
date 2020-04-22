@@ -11,7 +11,7 @@ node{
         def mvnHome =  tool name: 'M2_HOME', type: 'maven'
         withSonarQubeEnv('sonarqubeserver') 
           sh "${mvnHome}/bin/mvn sonar:sonar"
-          }
+   }
    stage('Deploy to Tomcat'){
       sshagent(['tomcat-dev']) {
          sh 'scp -o StrictHostKeyChecking=no target/*.war ec2-user@172.31.92.65:/opt/apache-tomcat-8.5.54/webapps'
