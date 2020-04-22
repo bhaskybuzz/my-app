@@ -1,0 +1,19 @@
+node{
+     stage('SCM Checkout'){
+        git 'https://github.com/javahometech/my-app'
+     }
+    stage('Build'){
+     def mvnHome = tool name: 'M2_HOME', type: 'maven'
+      sh "${mvnHome}/bin/mvn clean install package"
+      }
+   stage('SonarQube Analysis') {
+        def mvnHome = tool name: 'M2_HOME', type: 'maven'
+        withSonarQubeEnv('sonarqubeserver') { 
+          sh "${mvnHome}/bin/mvn sonar:sonar"
+        }
+        stage('Deploy to Tomcat'){
+      sshagent(['tomcat-dev']) {
+         sh 'scp -o StrictHostKeyChecking=no target/*.war ec2-user@172.31.92.65:/opt/apache-tomcat-8.5.54/webapps'
+    }
+   }
+   }
